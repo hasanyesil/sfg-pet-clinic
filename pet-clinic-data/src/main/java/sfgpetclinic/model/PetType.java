@@ -1,4 +1,4 @@
-package com.hashy.sfgpetclinic.model;
+package sfgpetclinic.model;
 
 public class PetType {
 
