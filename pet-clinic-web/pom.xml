@@ -96,6 +96,12 @@
             <artifactId>jaxb-api</artifactId>
             <version>2.3.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>2.22.0</version>
+            <scope>test</scope>
+        </dependency>
         <!-- end of webjars -->
     </dependencies>
 
