@@ -41,11 +41,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <scope>test</scope>
@@ -92,7 +87,7 @@
                         <groupId>org.junit.platform</groupId>
                         <artifactId>junit-platform-surefire-provider</artifactId>
                         <version>${junit-platform.version}</version>
-                        <scope>test</scope>
+                        <scope>runtime</scope>
                     </dependency>
                 </dependencies>
             </plugin>
