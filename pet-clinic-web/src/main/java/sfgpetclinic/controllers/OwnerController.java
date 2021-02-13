@@ -2,11 +2,19 @@ package sfgpetclinic.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import sfgpetclinic.model.Owner;
 import sfgpetclinic.services.OwnerService;
+
+import javax.print.attribute.standard.PresentationDirection;
+import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/owners")
 @Controller
@@ -18,18 +26,39 @@ public class OwnerController {
         this.ownerService = ownerService;
     }
 
-    @RequestMapping({"","/","/index", "/index.html"})
-    public String listOwners(Model model){
-
-        model.addAttribute("owners",ownerService.findAll());
-
-        return "owners/index";
+    @InitBinder //Dont allow to webforms sending id fields. It gonna be handled by database
+    public void setAllowedFields(WebDataBinder dataBinder){
+        dataBinder.setDisallowedFields("id");
     }
 
     @RequestMapping({"/find"})
-    public String findOwners(){
+    public String findOwners(Model model){
+        model.addAttribute("owner", Owner.builder().build());
+        return "owners/findOwners";
+    }
 
-        return "notimplemented";
+    @GetMapping
+    public String processFindForm(Owner owner, BindingResult result, Model model){
+        // allow parameterless GET request for /owners to return all recors.
+        if(owner.getLastName() == null){
+            owner.setLastName("");
+        }
+
+        //find owners by last name
+        List<Owner> results = ownerService.findAllByLastNameLike(owner.getLastName());
+        if(results.isEmpty()){
+            // no owner found
+            result.rejectValue("lastName", "notFound", "not found");
+            return "owners/findOwners";
+        }else if(results.size() == 1){
+            // 1 owner found
+            owner = results.iterator().next();
+            return "redirect:/owners/" + owner.getId();
+        }else{
+            // multiple owners found
+            model.addAttribute("selections",results);
+            return "owners/ownersList";
+        }
     }
 
     @GetMapping("/{ownerId}")
